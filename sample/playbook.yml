@@ -1,0 +1,21 @@
+---
+# playbook.yml
+- name: 'Provision Image'
+  hosts: default
+  become: true
+
+  tasks:
+    - name: Create temp rpm dependency directory
+      file:
+        path: /tmp/rpm_dependencies
+        state: directory
+
+    - name: Copy rpm dependencies
+      copy:
+        src: '{{ item }}'
+        dest: /tmp/rpm_dependencies/
+      with_fileglob:
+        - /workspace/core-artefacts/*.rpm
+    
+    - name: Install package
+      shell: rpm -ivh /tmp/rpm_dependencies/*.rpm 
